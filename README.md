@@ -1,8 +1,8 @@
 # [Project Title: e.g., Real-Time Object Detection for Waste Sorting]
 **CSC173 Intelligent Systems Final Project**  
 *Mindanao State University - Iligan Institute of Technology*  
-**Student:** [Your Full Name], [Student ID]  
-**Semester:** [e.g., AY 2025-2026 Sem 1]  
+**Student:** Jemar John J Lumingkit, 2022-1991
+**Semester:**  AY 2025-2026 Sem 1
 [![Python](https://img.shields.io/badge/Python-3.8+-blue)](https://python.org) [![PyTorch](https://img.shields.io/badge/PyTorch-2.0-orange)](https://pytorch.org)
 
 ## Abstract
