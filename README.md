@@ -1,71 +1,106 @@
-# 🌾 Sugarcane Leaf Disease Detection using CNN
+# [Project Title: e.g., Real-Time Object Detection for Waste Sorting]
+**CSC173 Intelligent Systems Final Project**  
+*Mindanao State University - Iligan Institute of Technology*  
+**Student:** [Your Full Name], [Student ID]  
+**Semester:** [e.g., AY 2025-2026 Sem 1]  
+[![Python](https://img.shields.io/badge/Python-3.8+-blue)](https://python.org) [![PyTorch](https://img.shields.io/badge/PyTorch-2.0-orange)](https://pytorch.org)
 
-A Deep Learning project that utilizes **Computer Vision (Convolutional Neural Networks)** to automatically detect and classify various diseases in sugarcane leaves. This tool aims to assist farmers and agricultural researchers in early disease diagnosis to prevent crop loss.
+## Abstract
+[150-250 words: Summarize problem (e.g., "Urban waste sorting in Mindanao"), dataset, deep CV method (e.g., YOLOv8 fine-tuned on custom trash images), key results (e.g., 92% mAP), and contributions.][web:25][web:41]
 
-![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
-![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-orange)
-![Google Colab](https://img.shields.io/badge/Platform-Google%20Colab-yellow)
+## Table of Contents
+- [Introduction](#introduction)
+- [Related Work](#related-work)
+- [Methodology](#methodology)
+- [Experiments & Results](#experiments--results)
+- [Discussion](#discussion)
+- [Ethical Considerations](#ethical-considerations)
+- [Conclusion](#conclusion)
+- [Installation](#installation)
+- [References](#references)
 
-## 📌 Project Overview
-Sugarcane is a major industrial crop, but it is susceptible to various fungal and viral diseases. Manual inspection of leaves is time-consuming and prone to error.
+## Introduction
+### Problem Statement
+[Describe the real-world vision problem and why it matters locally (e.g., IoT waste systems in Iligan).]
 
-This project implements a **Convolutional Neural Network (CNN)** to classify leaf images into **5 distinct categories** based on visual symptoms (spots, stripes, and discoloration).
+### Objectives
+- [Objective 1: e.g., Achieve >90% detection accuracy]
+- [Objective 2: Integrate with decision logic]
+- [Objective 3: Deploy on edge device]
 
-## 🍃 Disease Classes
-The model is trained to identify the following conditions:
-1.  **Healthy** (No disease)
-2.  **Mosaic** (Characterized by yellow/green mottling or stripes)
-3.  **Red Rot** (Bright red lesions on the midrib)
-4.  **Rust** (Orange/brown pustules on the leaf surface)
-5.  **Yellow** (General yellowing/chlorosis)
+![Problem Demo](images/problem_example.gif) [web:41]
 
-## 📂 Dataset Details
-* **Source:** [Sugarcane Leaf Disease Dataset (Kaggle)](https://www.kaggle.com/datasets/nirmalsankalana/sugarcane-leaf-disease-dataset)
-* **Data Structure:**
-    * Input Shape: `150x150` pixels
-    * Format: RGB Images
-* **Data Augmentation:** The model uses `ImageDataGenerator` for rotation, zooming, and shearing to improve generalization.
+## Related Work
+- [Paper 1: YOLOv8 for real-time detection [1]]
+- [Paper 2: Transfer learning on custom datasets [2]]
+- [Gap: Your unique approach, e.g., Mindanao-specific waste classes] [web:25]
 
-## 🧠 Model Architecture
-The project uses a custom Sequential CNN built with **TensorFlow/Keras**:
-* **4 Convolutional Layers:** To extract features like edges, textures (stripes/spots), and shapes.
-* **MaxPooling Layers:** To reduce dimensionality and computation.
-* **Flatten Layer:** To convert 2D feature maps to a 1D vector.
-* **Dropout Layer (0.5):** To prevent overfitting during training.
-* **Dense Output Layer:** Softmax activation for multi-class classification (5 classes).
+## Methodology
+### Dataset
+- Source: [e.g., Custom 5K images + COCO subset]
+- Split: 70/15/15 train/val/test
+- Preprocessing: Augmentation, resizing to 640x640 [web:41]
 
-## 🚀 How to Run (Google Colab)
-This project is optimized for Google Colab. No manual download of the dataset is required (it uses `kagglehub`).
+### Architecture
+![Model Diagram](images/architecture.png)
+- Backbone: [e.g., CSPDarknet53]
+- Head: [e.g., YOLO detection layers]
+- Hyperparameters: Table below
 
-1.  **Open the Notebook:** Upload the `.ipynb` file to Google Drive.
-2.  **Open with Google Colab:** Right-click the file > Open with > Google Colaboratory.
-3.  **Run All Cells:**
-    * The script will automatically download the dataset from Kaggle.
-    * It will preprocess the images and train the model.
-4.  **Test Your Own Image:**
-    * Scroll to the "Upload & Predict" section at the bottom.
-    * Run the cell and click **"Choose Files"** to upload a photo of a sugarcane leaf.
-    * The model will output the diagnosis and confidence score.
+| Parameter | Value |
+|-----------|-------|
+| Batch Size | 16 |
+| Learning Rate | 0.01 |
+| Epochs | 100 |
+| Optimizer | SGD |
 
-## 📊 Results & Visualization
-The notebook includes visualization tools to evaluate performance:
-* **Accuracy & Loss Graphs:** Tracks model learning over epochs.
-* **Confusion Matrix:** A heatmap showing exactly which diseases the model confuses (e.g., RedRot vs. Rust).
-* **Prediction Confidence:** Displays percentage certainty for predictions.
+### Training Code Snippet
+train.py excerpt
+model = YOLO('yolov8n.pt')
+model.train(data='dataset.yaml', epochs=100, imgsz=640)
 
-## 🛠️ Tech Stack
-* **Language:** Python 3
-* **Deep Learning:** TensorFlow, Keras
-* **Data Processing:** NumPy, Pandas
-* **Visualization:** Matplotlib, Seaborn
-* **Data Source:** KaggleHub
 
-## 📜 Citations
-If you use this project or the dataset, please credit the original dataset providers:
-* *Dataset:* Sugarcane Leaf Disease Dataset by Nirmal Sankalana (Kaggle).
-* *Original Research:* Daphal, Swapnil; Koli, Sanjay (2019).
+## Experiments & Results
+### Metrics
+| Model | mAP@0.5 | Precision | Recall | Inference Time (ms) |
+|-------|---------|-----------|--------|---------------------|
+| Baseline (YOLOv8n) | 85% | 0.87 | 0.82 | 12 |
+| **Ours (Fine-tuned)** | **92%** | **0.94** | **0.89** | **15** |
 
----
-**Author:** Jemar John J Lumingkit  
-**University:** Mindanao State University - Iligan Institute of Technology  
-**Date:** December 2025
+![Training Curve](images/loss_accuracy.png)
+
+### Demo
+![Detection Demo](demo/detection.gif)
+[Video: [CSC173_YourLastName_Final.mp4](demo/CSC173_YourLastName_Final.mp4)] [web:41]
+
+## Discussion
+- Strengths: [e.g., Handles occluded trash well]
+- Limitations: [e.g., Low-light performance]
+- Insights: [e.g., Data augmentation boosted +7% mAP] [web:25]
+
+## Ethical Considerations
+- Bias: Dataset skewed toward plastic/metal; rural waste underrepresented
+- Privacy: No faces in training data
+- Misuse: Potential for surveillance if repurposed [web:41]
+
+## Conclusion
+[Key achievements and 2-3 future directions, e.g., Deploy to Raspberry Pi for IoT.]
+
+## Installation
+1. Clone repo: `git clone https://github.com/yourusername/CSC173-DeepCV-YourLastName`
+2. Install deps: `pip install -r requirements.txt`
+3. Download weights: See `models/` or run `download_weights.sh` [web:22][web:25]
+
+**requirements.txt:**
+torch>=2.0
+ultralytics
+opencv-python
+albumentations
+
+## References
+[1] Jocher, G., et al. "YOLOv8," Ultralytics, 2023.  
+[2] Deng, J., et al. "ImageNet: A large-scale hierarchical image database," CVPR, 2009. [web:25]
+
+## GitHub Pages
+View this project site: [https://jjmmontemayor.github.io/CSC173-DeepCV-Montemayor/](https://jjmmontemayor.github.io/CSC173-DeepCV-Montemayor/) [web:32]
+
