@@ -1,36 +1,46 @@
-
 # CSC173 Deep Computer Vision Project Proposal
 **Student:** Jemar John J Lumingkit, 2022-1991  
 **Date:** 12/10/25
 
 ## 1. Project Title 
-SugarGuard: A Hybrid Computer Vision Framework for Sugarcane Disease Classification and Precision Severity Estimation
+TubuGAN: Cycle-Consistent Visual Prognosis of Red Rot Disease
 
 ## 2. Problem Statement
-Sugarcane farming is a critical economic driver, yet yield is frequently devastated by fungal and viral diseases like Red Rot and Mosaic. Current manual inspection methods are subjective, labor-intensive, and often fail to quantify infection severity accurately, leading to either delayed treatment or excessive pesticide use. This project addresses the need for an automated, precision-agriculture tool that not only identifies the disease type but also provides a quantitative severity assessment to guide specific intervention strategies.
+<div style="text-align: justify">
+Sugarcane Red Rot, caused by the fungus Colletotrichum falcatum, is a devastating disease known as the "cancer" of sugarcane, capable of causing up to 100% yield loss if not managed early. While recent advancements in Deep Learning have successfully automated the diagnosis (classification) of the disease, there is a significant lack of tools for prognosis (forecasting severity).
+Current diagnostic models typically provide a binary output ("Healthy" or "Diseased") but fail to visualize how the infection will propagate across the leaf surface over time. Furthermore, training prognostic models is difficult because obtaining "paired" temporal data (photographing the exact same leaf at different stages of decay in the wild) is logistically impractical. Consequently, farmers lack the visual data necessary to estimate potential crop degradation, often leading to delayed fungicide application or unnecessary whole-field quarantine. This project addresses the need for a generative simulation tool that can synthesize the future "Severe" state of a leaf from a "Mild" input using unpaired data.
+</div>
 
 ## 3. Objectives
-- Develop a robust classifier: Train a Deep Learning model to classify sugarcane leaf images into 5 categories (Healthy, Mosaic, RedRot, Rust, Yellow) with >90% accuracy.
-- Implement "Smart" Severity Grading: Engineer a secondary Computer Vision pipeline using Instance Segmentation to isolate leaves from complex backgrounds (soil, debris) and calculate precise infection percentages.
-- Create a Self-Correcting Pipeline: Integrate the classification and segmentation models into a unified system that cross-verifies results to eliminate false positives (e.g., mistaking soil for disease).
+**General Objective**
+<div style="text-align: justify">
+To develop a Deep Learning-based visual prognosis system using CycleGAN that generates synthetic images simulating the progression of Red Rot disease from mild to severe stages.
+</div>
+
+**Specific Objectives**
+- **To Implement Automated Domain Sorting:** To develop a Computer Vision algorithm using HSV color space masking to calculate the "Infection Ratio" (diseased pixels vs. total leaf pixels) and automatically partition the dataset into "Mild" ($<12\%$ infection) and "Severe" domains.
+- **To Train a Generative Model:** To design and train a Cycle-Consistent Generative Adversarial Network (CycleGAN) with ResNet generators to learn the mapping between mild and severe domains without paired training examples.
+- **To Evaluate Visual Prognosis:** To create an inference pipeline that accepts real-world mild infection images and outputs high-fidelity synthetic visualizations of the predicted severe necrotic state.
 
 ## 4. Dataset Plan
 - Source: Kaggle: [Sugarcane Leaf Disease Dataset](https://www.kaggle.com/datasets/nirmalsankalana/sugarcane-leaf-disease-dataset) (~160MB)
-- Classes: 1. Healthy 2. Mosaic 3. RedRot 4. Rust 5. Yellow
-- Acquisition: Automated download via kagglehub API in Google Colab to ensure reproducibility and easy access to the latest version.
+- Classes: 
+    - Domain A (Input): Red_Rot_Mild (Leaves with small, isolated lesions).
+    - Domain B (Target): Red_Rot_Severe (Leaves with large necrosis and coalesced spots).
+- Acquisition & Preprocessing:
+    - Download public dataset via Kaggle API.
+    - Manual Stratification: Since the dataset is labeled by Type (e.g., Red Rot) but not Severity, I will manually filter the "Red Rot" folder into two new sub-folders: "Mild" (early stage) and "Severe" (late stage) to create the unpaired domains required for CycleGAN.
 
 ## 5. Technical Approach
-- Architecture: A Hybrid Two-Stage Pipeline:
-    - Stage 1 (Diagnosis): A Convolutional Neural Network (CNN) analyzes the global context of the image to predict the disease class.
-    - Stage 2 (Quantification): A Logic-Gated Segmentation module isolates the specific leaf and performs spectral analysis to measure the diseased area.
-- Model: Classification: MobileNetV2 (Transfer Learning from ImageNet) for lightweight, high-accuracy disease recognition.
-    - Segmentation: FastSAM (Fast Segment Anything Model) for Instance Segmentation to remove background noise (soil/sky).
-- Framework: TensorFlow/Keras (for MobileNetV2 training/inference).
-    - PyTorch/Ultralytics (for FastSAM segmentation).
-    - OpenCV (for HSV color thresholding and contour analysis).
+- Architecture: CycleGAN (Unpaired Image-to-Image Translation).
+    - Generator (G): ResNet-based generator to transform Domain A (Mild) -> Domain B (Severe).
+    - Discriminator (D): PatchGAN classifier to distinguish between real severe images and generated ones.
+    - Loss Function: Cycle Consistency Loss (L1) + Adversarial Loss (MSE).
+- Framework: PyTorch (chosen for superior support of GAN libraries like torch-gan).
 - Hardware: Google Colab (T4 GPU)
 
 ## 6. Expected Challenges & Mitigations
-- Challenge 1: Small Dataset (Overfitting) Mitigation: Utilization of Transfer Learning (freezing MobileNetV2 base layers) and aggressive Data Augmentation (rotation, zoom, shear) to artificially expand the training set.
-- Challenge 2: Background Noise (False Positives) Mitigation: Standard classifiers often mistake background soil for disease. I will implement Instance Segmentation (FastSAM) to computationally "erase" the background before severity analysis, ensuring only leaf pixels are counted.
-- Challenge 3: Distinguishing "Yellow Leaf" from Natural Senescence Mitigation: Implementation of a Logic Gate (Auto-Correction). If the classifier predicts a disease but the severity calculator finds <1.5\% infection (trace noise), the system will automatically override the diagnosis to "Healthy."
+**Challenges 1:** Mode Collapse (The generator produces the exact same "severe" pattern for every input leaf).
+- **Solution 1:** Implement Identity Loss to force the generator to preserve the original leaf shape and background, changing only the disease features.
+**Challenge 2:** Subjective Data Labels (Defining "Mild" vs "Severe" is prone to human error).
+- **Solution 2:** Use a "Percentage of Infection" (PI) thresholding algorithm (using OpenCV color segmentation) to automatically sort images into domains instead of relying purely on manual guessing.

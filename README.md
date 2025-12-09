@@ -1,12 +1,10 @@
-# [Project Title: e.g., Real-Time Object Detection for Waste Sorting]
-**CSC173 Intelligent Systems Final Project**  
-*Mindanao State University - Iligan Institute of Technology*  
-**Student:** Jemar John J Lumingkit, 2022-1991
-**Semester:**  AY 2025-2026 Sem 1
-[![Python](https://img.shields.io/badge/Python-3.8+-blue)](https://python.org) [![PyTorch](https://img.shields.io/badge/PyTorch-2.0-orange)](https://pytorch.org)
+# TubuGAN: Cycle-Consistent Visual Prognosis of Red Rot Disease
+**CSC173 Intelligent Systems Final Project** *Mindanao State University - Iligan Institute of Technology* **Student:** Jemar John J Lumingkit, 2022-1991  
+**Semester:** AY 2025-2026 Sem 1  
+[![Python](https://img.shields.io/badge/Python-3.8+-blue)](https://python.org) [![TensorFlow](https://img.shields.io/badge/TensorFlow-2.15-orange)](https://tensorflow.org) [![YOLOv8](https://img.shields.io/badge/YOLOv8-Ultralytics-green)](https://github.com/ultralytics/ultralytics)
 
 ## Abstract
-[150-250 words: Summarize problem (e.g., "Urban waste sorting in Mindanao"), dataset, deep CV method (e.g., YOLOv8 fine-tuned on custom trash images), key results (e.g., 92% mAP), and contributions.][web:25][web:41]
+Sugarcane Red Rot, known as the "cancer" of sugarcane, causes massive yield losses in Mindanao and globally. While current AI models focus on diagnosis, there is a critical gap in prognosis—visualizing how a mild infection will progress to a severe state. This project proposes TubuGAN, a deep computer vision system using Cycle-Consistent Generative Adversarial Networks (CycleGAN) to simulate disease progression. Utilizing the Kaggle Sugarcane Leaf Disease dataset, we employ an automated HSV-based sorting algorithm to partition data into "Mild" and "Severe" domains without manual labeling. The model trains on these unpaired domains to learn the mapping G: Mild -> Severe. Key expected results include a high structural similarity (SSIM) between original and reconstructed leaves and realistic synthetic necrosis generation, providing farmers with a visual "future state" of their crops to inform early intervention decisions.
 
 ## Table of Contents
 - [Introduction](#introduction)
@@ -21,86 +19,75 @@
 
 ## Introduction
 ### Problem Statement
-[Describe the real-world vision problem and why it matters locally (e.g., IoT waste systems in Iligan).]
+Sugarcane farming is a backbone of Mindanao's agriculture, yet it is plagued by Red Rot disease. Current management is reactive, relying on binary detection ("Healthy" vs. "Sick") models. Farmers lack tools to visualize future severity, leading to uncertainty in fungicide application. A visual prognosis tool that simulates infection growth on a specific leaf is needed to justify early, cost-effective interventions.
 
 ### Objectives
-- [Objective 1: e.g., Achieve >90% detection accuracy]
-- [Objective 2: Integrate with decision logic]
-- [Objective 3: Deploy on edge device]
-
-![Problem Demo](images/problem_example.gif) [web:41]
+1.  **Automated Domain Sorting:** Develop an HSV-based computer vision algorithm to calculate infection severity ratios (R) and automatically sort raw data into "Mild" (R < 0.12) and "Severe" domains.
+2.  **Generative Prognosis:** Train a CycleGAN architecture with ResNet generators to learn the mapping between Mild and Severe domains without paired data.
+3.  **Visual Inference:** Deploy a pipeline that accepts a user-uploaded mild leaf and generates a high-fidelity synthetic image of its predicted severe state.
 
 ## Related Work
-- [Paper 1: YOLOv8 for real-time detection [1]]
-- [Paper 2: Transfer learning on custom datasets [2]]
-- [Gap: Your unique approach, e.g., Mindanao-specific waste classes] [web:25]
+- **CycleGAN for Unpaired Translation:** Zhu et al. (2017) introduced CycleGAN, enabling image-to-image translation without paired examples, crucial for agricultural datasets where temporal pairs are rare.
+- **Sugarcane Disease Detection:** Recent studies like Tanwar et al. (2023) utilized CNNs for Red Rot classification but focused solely on diagnosis, not prognosis or generative modeling.
+- **Gap:** Existing local research lacks generative prognosis. TubuGAN addresses this by simulating the future visual state of the disease rather than just classifying its current state. 
 
 ## Methodology
 ### Dataset
-- Source: [e.g., Custom 5K images + COCO subset]
-- Split: 70/15/15 train/val/test
-- Preprocessing: Augmentation, resizing to 640x640 [web:41]
+- **Source:** [Kaggle Sugarcane Leaf Disease Dataset](https://www.kaggle.com/datasets/nirmalsankalana/sugarcane-leaf-disease-dataset)
+- **Target Class:** Red Rot (3,000+ Images)
+- **Split:** 80/20 (Unpaired Mild/Severe domains).
+- **Preprocessing:** HSV Color Masking for Infection Ratio calculation; Resizing to 256x256; Random Horizontal Flip augmentation.
 
 ### Architecture
-![Model Diagram](images/architecture.png)
-- Backbone: [e.g., CSPDarknet53]
-- Head: [e.g., YOLO detection layers]
-- Hyperparameters: Table below
+**Model Diagram:**
+   - **Generator (G):** ResNet-9 block architecture to preserve leaf structure while altering texture.
+   - **Discriminator (D):** 70x70 PatchGAN to classify local image patches as real or fake.
+   - **Cycle Consistency:** Mild -> Severe -> Mild reconstruction loop to ensure structural integrity.
 
+### Hyperparameters
 | Parameter | Value |
-|-----------|-------|
-| Batch Size | 16 |
-| Learning Rate | 0.01 |
-| Epochs | 100 |
-| Optimizer | SGD |
+| Batch Size | 1 |
+| Learning Rate | 0.0002 |
+| Epochs | 50-100 |
+| Optimizer | Adam (\beta_1=0.5) |
+| Loss Weights | $\lambda_{cycle}=10$, $\lambda_{identity}=5$ |
+
 
 ### Training Code Snippet
-train.py excerpt
-model = YOLO('yolov8n.pt')
-model.train(data='dataset.yaml', epochs=100, imgsz=640)
+```python
+import itertools
+# Initialize Generators and Discriminators
+G_AB = GeneratorResNet() # Mild -> Severe
+G_BA = GeneratorResNet() # Severe -> Mild
+D_A = Discriminator()    # Mild
+D_B = Discriminator()    # Severe
 
+# Optimizers
+optimizer_G = torch.optim.Adam(
+    itertools.chain(G_AB.parameters(), G_BA.parameters()), lr=0.0002, betas=(0.5, 0.999)
+)
+
+# Training Loop Excerpt
+for i, batch in enumerate(dataloader):
+    real_A = batch['A'].to(device) # Mild
+    real_B = batch['B'].to(device) # Severe
+    
+    # Forward Cycle
+    fake_B = G_AB(real_A)
+    recov_A = G_BA(fake_B)
+    
+    # Calculate Losses
+    loss_cycle = criterion_cycle(recov_A, real_A)
+    loss_GAN = criterion_GAN(D_B(fake_B), valid)
+    
+    loss_G = loss_GAN + 10.0 * loss_cycle
+    loss_G.backward()
+    optimizer_G.step()
+```
 
 ## Experiments & Results
-### Metrics
-| Model | mAP@0.5 | Precision | Recall | Inference Time (ms) |
-|-------|---------|-----------|--------|---------------------|
-| Baseline (YOLOv8n) | 85% | 0.87 | 0.82 | 12 |
-| **Ours (Fine-tuned)** | **92%** | **0.94** | **0.89** | **15** |
 
-![Training Curve](images/loss_accuracy.png)
-
-### Demo
-![Detection Demo](demo/detection.gif)
-[Video: [CSC173_YourLastName_Final.mp4](demo/CSC173_YourLastName_Final.mp4)] [web:41]
-
-## Discussion
-- Strengths: [e.g., Handles occluded trash well]
-- Limitations: [e.g., Low-light performance]
-- Insights: [e.g., Data augmentation boosted +7% mAP] [web:25]
-
-## Ethical Considerations
-- Bias: Dataset skewed toward plastic/metal; rural waste underrepresented
-- Privacy: No faces in training data
-- Misuse: Potential for surveillance if repurposed [web:41]
-
-## Conclusion
-[Key achievements and 2-3 future directions, e.g., Deploy to Raspberry Pi for IoT.]
-
-## Installation
-1. Clone repo: `git clone https://github.com/yourusername/CSC173-DeepCV-YourLastName`
-2. Install deps: `pip install -r requirements.txt`
-3. Download weights: See `models/` or run `download_weights.sh` [web:22][web:25]
-
-**requirements.txt:**
-torch>=2.0
-ultralytics
-opencv-python
-albumentations
-
-## References
-[1] Jocher, G., et al. "YOLOv8," Ultralytics, 2023.  
-[2] Deng, J., et al. "ImageNet: A large-scale hierarchical image database," CVPR, 2009. [web:25]
-
-## GitHub Pages
-View this project site: [https://jjmmontemayor.github.io/CSC173-DeepCV-Montemayor/](https://jjmmontemayor.github.io/CSC173-DeepCV-Montemayor/) [web:32]
-
+### Expected Metrics
+| Model | FID Score (Lower is better) | SSIM (Structure Preservation) | Inference Time |
+| Baseline (Pix2Pix) | 85.4 | 0.72 | 18ms |
+| TubuGAN | 62.1 | 0.89 | 22ms |
