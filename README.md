@@ -168,4 +168,4 @@ tqdm
 [3] S. Srivastava et al., "A Novel Deep Learning Framework Approach for Sugarcane Disease Detection," SN Computer Science, 2020.
 
 ## Github Pages
-View this project site: https://kingsting.github.io/KINGSTING/CSC173-DeepCV-Lumingkit/
+View this project site: https://kingsting.github.io/CSC173-DeepCV-Lumingkit/
