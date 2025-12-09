@@ -111,7 +111,7 @@ for i, batch in enumerate(dataloader):
 
 ### Expected Metrics
 | Model | FID Score (Lower is better) | SSIM (Structure Preservation) | Inference Time |
-| :--- | :--- | :--- | :--- | 
+| :- | :- | :- | :- | 
 | Baseline (Pix2Pix) | 185.4 | 0.72 | 18ms |
 | TubuGAN | 62.1 | 0.89 | 22ms |
 

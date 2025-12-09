@@ -12,13 +12,13 @@ Current diagnostic models typically provide a binary output ("Healthy" or "Disea
 </div>
 
 ## 3. Objectives
-**General Objective**
+**General Objective:**
 <div style="text-align: justify">
 To develop a Deep Learning-based visual prognosis system using CycleGAN that generates synthetic images simulating the progression of Red Rot disease from mild to severe stages.
 </div>
 
-**Specific Objectives**
-- **To Implement Automated Domain Sorting:** To develop a Computer Vision algorithm using HSV color space masking to calculate the "Infection Ratio" (diseased pixels vs. total leaf pixels) and automatically partition the dataset into "Mild" ($<12\%$ infection) and "Severe" domains.
+**Specific Objectives:**
+- **To Implement Automated Domain Sorting:** To develop a Computer Vision algorithm using HSV color space masking to calculate the "Infection Ratio" (diseased pixels vs. total leaf pixels) and automatically partition the dataset into "Mild" (<12% infection) and "Severe" domains.
 - **To Train a Generative Model:** To design and train a Cycle-Consistent Generative Adversarial Network (CycleGAN) with ResNet generators to learn the mapping between mild and severe domains without paired training examples.
 - **To Evaluate Visual Prognosis:** To create an inference pipeline that accepts real-world mild infection images and outputs high-fidelity synthetic visualizations of the predicted severe necrotic state.
 
@@ -40,7 +40,9 @@ To develop a Deep Learning-based visual prognosis system using CycleGAN that gen
 - Hardware: Google Colab (T4 GPU)
 
 ## 6. Expected Challenges & Mitigations
-**Challenges 1:** Mode Collapse (The generator produces the exact same "severe" pattern for every input leaf).
-- **Solution 1:** Implement Identity Loss to force the generator to preserve the original leaf shape and background, changing only the disease features.
+
+**Challenge 1:** Mode Collapse (The generator produces the exact same "severe" pattern for every input leaf).
+> **Solution 1:** Implement Identity Loss to force the generator to preserve the original leaf shape and background, changing only the disease features.
+
 **Challenge 2:** Subjective Data Labels (Defining "Mild" vs "Severe" is prone to human error).
-- **Solution 2:** Use a "Percentage of Infection" (PI) thresholding algorithm (using OpenCV color segmentation) to automatically sort images into domains instead of relying purely on manual guessing.
+> **Solution 2:** Use a "Percentage of Infection" (PI) thresholding algorithm (using OpenCV color segmentation) to automatically sort images into domains instead of relying purely on manual guessing.
