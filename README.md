@@ -12,7 +12,7 @@
 
 ## Abstract
 <div style="text-align: justify">
-Sugarcane Red Rot, known as the "cancer" of sugarcane, causes massive yield losses in Mindanao and globally. While current AI models focus on diagnosis, there is a critical gap in prognosis—visualizing how a mild infection will progress to a severe state. This project proposes TubuGAN, a deep computer vision system using Cycle-Consistent Generative Adversarial Networks (CycleGAN) to simulate disease progression. Utilizing the Kaggle Sugarcane Leaf Disease dataset, we employ an automated HSV-based sorting algorithm to partition data into "Mild" and "Severe" domains without manual labeling. The model trains on these unpaired domains to learn the mapping G: Mild -> Severe. Key expected results include a high structural similarity (SSIM) between original and reconstructed leaves and realistic synthetic necrosis generation, providing farmers with a visual "future state" of their crops to inform early intervention decisions.
+Sugarcane Red Rot, known as the "cancer" of sugarcane, causes massive yield losses in Mindanao and globally. While current AI models focus on diagnosis, there is a critical gap in prognosis—visualizing how a mild infection will progress to a severe state. This project proposes TubuGAN, a deep computer vision system using Cycle-Consistent Generative Adversarial Networks (CycleGAN) to simulate disease progression. Utilizing the Kaggle Sugarcane Leaf Disease dataset, we employ an automated HSV-based sorting algorithm to partition data into "Mild" and "Severe" domains without manual labeling. The model trains on these unpaired domains to learn the mapping *G: Mild -> Severe*. Key expected results include a high structural similarity (SSIM) between original and reconstructed leaves and realistic synthetic necrosis generation, providing farmers with a visual "future state" of their crops to inform early intervention decisions.
 </div>
 
 ## Table of Contents
@@ -36,7 +36,7 @@ Sugarcane farming is a backbone of Mindanao's agriculture, yet it is plagued by 
 </div>
 
 ### Objectives
-1. **Automated Domain Sorting:** Develop an HSV-based computer vision algorithm to calculate infection severity ratios (R) and automatically sort raw data into "Mild" ($R < 0.12$) and "Severe" domains.
+1. **Automated Domain Sorting:** Develop an HSV-based computer vision algorithm to calculate infection severity ratios (R) and automatically sort raw data into "Mild" (R < 0.12) and "Severe" domains.
 2. **Generative Prognosis:** Train a CycleGAN architecture with ResNet generators to learn the mapping between Mild and Severe domains without paired data.
 3. **Visual Inference:** Deploy a pipeline that accepts a user-uploaded mild leaf and generates a high-fidelity synthetic image of its predicted severe state.
 
@@ -60,9 +60,7 @@ Sugarcane farming is a backbone of Mindanao's agriculture, yet it is plagued by 
 ### Architecture
 **Model Diagram:**
 
-
-[Image of CycleGAN architecture diagram showing Generator and Discriminator loops](https://drive.google.com/file/d/103vJhAK-FaKwxpj6QcznYX2vwfbFvuip/view?usp=sharing)
-
+![Image of CycleGAN architecture diagram showing Generator and Discriminator loops](https://drive.google.com/file/d/103vJhAK-FaKwxpj6QcznYX2vwfbFvuip/view?usp=sharing)
 
 * **Generator (G):** ResNet-9 block architecture to preserve leaf structure while altering texture.
 * **Discriminator (D):** 70x70 PatchGAN to classify local image patches as real or fake.
@@ -120,6 +118,9 @@ for i, batch in enumerate(dataloader):
 ### Training Curve
 - Adversarial Loss is expected to oscillate, indicating healthy competition between Generator and Discriminator.
 - Cycle Consistency Loss should steadily decrease, confirming the model is learning to preserve leaf shape.
+
+### Result 
+![TubuGan Result Image]()
 
 ### Discussion
 - Strengths: The use of CycleGAN removes the need for expensive paired data collection. The HSV-based auto-sorting eliminates subjective manual labeling errors.
