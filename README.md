@@ -60,7 +60,7 @@ Sugarcane farming is a backbone of Mindanao's agriculture, yet it is plagued by 
 ### Architecture
 **Model Diagram:**
 
-![Architecture Diagram](https://drive.google.com/uc?export=view&id=103vJhAK-FaKwxpj6QcznYX2vwfbFvuip)
+![Architecture Diagram](https://drive.google.com/file/d/18cazle1a3dBKNb97lHNwwAJVSQhmJnPi)
 
 * **Generator (G):** ResNet-9 block architecture to preserve leaf structure while altering texture.
 * **Discriminator (D):** 70x70 PatchGAN to classify local image patches as real or fake.

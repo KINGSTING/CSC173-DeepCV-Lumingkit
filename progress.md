@@ -29,7 +29,7 @@
 ## 2. Training Progress
 
 **Training Curves**
-![Generator & Discriminator](https://drive.google.com/file/d/1NRnPqbRpHMKLJu2MYqSrV4AxPDbERTFL/view?usp=sharing)
+![Training Curve](https://drive.google.com/uc?export=view&id=1NRnPqbRpHMKLJu2MYqSrV4AxPDbERTFL)
 
 
 **Current Metrics (Epoch 1 - Debug Mode):** Note: Metrics below reflect the Generative Adversarial Network performance, not classification accuracy.
