@@ -116,11 +116,12 @@ for i, batch in enumerate(dataloader):
 | TubuGAN | 62.1 | 0.89 | 22ms |
 
 ### Training Curve
+![Generator & Discriminator](https://drive.google.com/file/d/1NRnPqbRpHMKLJu2MYqSrV4AxPDbERTFL/view?usp=sharing)
 - Adversarial Loss is expected to oscillate, indicating healthy competition between Generator and Discriminator.
 - Cycle Consistency Loss should steadily decrease, confirming the model is learning to preserve leaf shape.
 
 ### Result 
-![TubuGan Result Image]()
+![TubuGan Result Image](https://drive.google.com/file/d/1lSDM0v5R7uT8vhKE5Gsn0jwwXUwds67k/view?usp=sharing)
 
 ### Discussion
 - Strengths: The use of CycleGAN removes the need for expensive paired data collection. The HSV-based auto-sorting eliminates subjective manual labeling errors.

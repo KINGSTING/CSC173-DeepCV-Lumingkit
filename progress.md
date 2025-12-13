@@ -2,15 +2,16 @@
 **Student:** Jemar John J Lumingkit, 2022-1991  
 **Date:** 12/10/25  
 **Repository:** [https://github.com/KINGSTING/CSC173-DeepCV-Lumingkit](https://github.com/KINGSTING/CSC173-DeepCV-Lumingkit)  
-**Commits Since Proposal:** [11 commits] | **Last Commit:** [12/09/25]
+**Commits Since Proposal:** [15 commits] | **Last Commit:** [12/13/25]
 
-## 📊 Current Status
+## 📊 Project Status: COMPLETED
 | Milestone | Status | Notes |
 |-----------|--------|-------|
 | Dataset Preparation | ✅ Completed | 3,108 images sorted via HSV algorithm |
-| Initial Training | 🟡 In Progress| Pipeline verified via CPU debug; GPU run pending |
-| Baseline Evaluation | ⏳ Pending | Awaiting full training weights |
-| Model Fine-tuning | ⏳ Not Started | Planned for post-training analysis |
+| Model Architecture | ✅ Completed | CycleGAN with Replay Buffer & ResNet Generator |
+| Stability Optimization| ✅ Completed | Implemented Replay Buffer & Checkpoint Resume Logic |
+| Full Training | ✅ Completed | 50 Epochs executed on Kaggle T4 GPU |
+| Final Evaluation | ✅ Completed | SSIM calculation & Inference Demo finalized |
 
 ## 1. Dataset Progress
 - **Total images:** 3,108 images (Sugarcane Red Rot)
@@ -27,8 +28,8 @@
 
 ## 2. Training Progress
 
-**Training Curves (Initial Debug Run)**
-![Loss Curve](images/loss_curve.png)
+**Training Curves**
+![Generator & Discriminator](https://drive.google.com/file/d/1NRnPqbRpHMKLJu2MYqSrV4AxPDbERTFL/view?usp=sharing)
 
 
 **Current Metrics (Epoch 1 - Debug Mode):** Note: Metrics below reflect the Generative Adversarial Network performance, not classification accuracy.
@@ -41,13 +42,13 @@
 ## 3. Challenges Encountered & Solutions
 | Issue | Status | Resolution |
 |-------|--------|------------|
-| Google Colab GPU Limit | ✅ Fixed | Implemented a "Fast Debug" CPU mode (1 epoch, 5 batches) to verify code logic before full training. |
-| Unpaired Data Sorting | ✅ Fixed | Created an automated OpenCV algorithm to calculate "Infection Ratio" and split folders automatically. |
-| Training Speed | ⏳ Ongoing | Code optimized with torch.amp (Mixed Precision); waiting for T4 GPU availability for full run. |
+| **Mode Collapse / Instability** | ✅ Fixed | The standard training loop was unstable. Implemented a **Replay Buffer** (Shrivastava et al., 2017) to stabilize the discriminator updates. |
+| **Runtime Disconnects (Kaggle)**| ✅ Fixed | Implemented a robust `save_checkpoint` system that auto-saves "Latest" and "Permanent" weights, combined with logic to auto-detect and resume from the last epoch. |
+| **Unpaired Data Sorting** | ✅ Fixed | Created an automated OpenCV algorithm to calculate "Infection Ratio" and split folders automatically based on a 12% threshold. |
+| **Visualization Errors** | ✅ Fixed | Corrected tensor denormalization logic to properly display High-Dynamic Range (HDR) tensors as viewable RGB images. |
 
-## 4. Next Steps (Before Final Submission)
-- [ ] **Full Training:** Execute 50-100 epochs on T4 GPU once quota resets.
-- [ ] **Inference Pipeline:** Generate side-by-side comparisons (Original Mild vs. Generated Severe) for the final report.
-- [ ] **Evaluation:** Calculate SSIM (Structural Similarity Index) to ensure leaf structure is preserved.
-- [ ] **Documentation:** Record 5-min demo video showing the "Upload -> Prognosis" workflow.
-- [ ] **Final Polish:** Update README.md with generated sample images.
+## 4. Final Deliverables
+- [x] **Full Training:** 50-epoch run completed on Kaggle T4.
+- [x] **Inference Pipeline:** Generated side-by-side comparisons (Original Mild vs. Generated Severe).
+- [x] **Video Presentation:** Recorded 5-minute technical walkthrough covering "Problem -> CycleGAN Architecture -> Results".
+- [x] **Documentation:** README.md updated with sample prognosis images and deployment instructions.
