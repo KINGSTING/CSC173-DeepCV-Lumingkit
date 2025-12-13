@@ -52,7 +52,7 @@ Sugarcane farming is a backbone of Mindanao's agriculture, yet it is plagued by 
 ## Methodology
 
 ### Dataset
-* **Source:** [Kaggle Sugarcane Leaf Disease Dataset](https://www.kaggle.com/datasets/nirmalsankalana/sugarcane-leaf-disease-dataset)
+* **Source:** [Kaggle Sugarcane Leaf Disease Dataset](assets\G&D loss.png")
 * **Target Class:** Red Rot (3,000+ Images)
 * **Split:** 80/20 (Unpaired Mild/Severe domains).
 * **Preprocessing:** HSV Color Masking for Infection Ratio calculation; Resizing to 256x256; Random Horizontal Flip augmentation.
@@ -60,7 +60,7 @@ Sugarcane farming is a backbone of Mindanao's agriculture, yet it is plagued by 
 ### Architecture
 **Model Diagram:**
 
-![Image of CycleGAN architecture diagram showing Generator and Discriminator loops](https://drive.google.com/file/d/103vJhAK-FaKwxpj6QcznYX2vwfbFvuip/view?usp=sharing)
+![Architecture Diagram](https://drive.google.com/uc?export=view&id=103vJhAK-FaKwxpj6QcznYX2vwfbFvuip)
 
 * **Generator (G):** ResNet-9 block architecture to preserve leaf structure while altering texture.
 * **Discriminator (D):** 70x70 PatchGAN to classify local image patches as real or fake.
@@ -116,12 +116,12 @@ for i, batch in enumerate(dataloader):
 | TubuGAN | 62.1 | 0.89 | 22ms |
 
 ### Training Curve
-![Generator & Discriminator](https://drive.google.com/file/d/1NRnPqbRpHMKLJu2MYqSrV4AxPDbERTFL/view?usp=sharing)
+![Training Curve](https://drive.google.com/uc?export=view&id=1NRnPqbRpHMKLJu2MYqSrV4AxPDbERTFL)
 - Adversarial Loss is expected to oscillate, indicating healthy competition between Generator and Discriminator.
 - Cycle Consistency Loss should steadily decrease, confirming the model is learning to preserve leaf shape.
 
 ### Result 
-![TubuGan Result Image](https://drive.google.com/file/d/1lSDM0v5R7uT8vhKE5Gsn0jwwXUwds67k/view?usp=sharing)
+![TubuGAN Result](https://drive.google.com/uc?export=view&id=1lSDM0v5R7uT8vhKE5Gsn0jwwXUwds67k)
 
 ### Discussion
 - Strengths: The use of CycleGAN removes the need for expensive paired data collection. The HSV-based auto-sorting eliminates subjective manual labeling errors.
